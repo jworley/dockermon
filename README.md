@@ -13,6 +13,15 @@ dockermon can be installed from NPM using:
 $ npm install -g dockermon
 ```
 
+There are also a binary version of available in the [releases][releases].
+Download the binary, untar it, and add it to you PATH
+
+```
+$ wget https://github.com/jworley/dockermon/releases/download/v0.1.0/dockermon-linux-amd64-0.1.0.tar.gz
+$ tar -zxvf dockermon-linux-amd64-0.1.0.tar.gz
+$ ./dockermon
+```
+
 ### Usage
 
 ```
@@ -32,3 +41,4 @@ Options:
   --force, -f           Run input even if no containers are found                                                         [default: true]
 ```
 [docker]: https://docker.com
+[releases]: https://github.com/jworley/dockermon/releases
