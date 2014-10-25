@@ -1,0 +1,54 @@
+<% var hostNames = _(containers)
+    .where(function(c) {
+      return !!c.env.VIRTUAL_HOST;
+    })
+    .map(function(container) {
+      return _.map(container.env.VIRTUAL_HOST.split(','), function(host) {
+        return {
+          host: host,
+          container: container
+        };
+      });
+    }).flatten().groupBy(function(c) { return c.host; }).value();
+%>server {
+  listen 80 default_server;
+  server_name _;
+  error_log /proc/self/fd/2;
+  access_log /proc/self/fd/1;
+  return 503;
+}
+
+<% _.forEach(hostNames, function(servers, hostName) { %>
+upstream <%= hostName %> {
+<% _.forEach(servers, function(server) { var c = server.container, a = c.addresses; %>
+  <% if (a.length = 1) {%>
+    # <%= c.name %>
+    server <%= a[0].ipAddress + ':' + a[0].port %>;
+  <% } else if (!!c.env.VIRTUAL_PORT) { var a1 = _.find(a, function(virtPort) { return virtPort.port === c.env.VIRTUAL_PORT; }); %>
+    # <%= c.name %>
+    server <%= a1.ipAddress + ':' + a1.port %>;
+  <% } else { var a1 = _.find(a, function(virtPort) { return virtPort.port === '80'; }); %>
+    # <%= c.name %>
+    server <%= a1.ipAddress + ':' + a1.port %>;
+  <% } %>
+<% }); %>
+}
+
+server {
+  gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+
+  server_name <%= hostName %>;
+  proxy_buffering off;
+  error_log /proc/self/fd/2;
+  access_log /proc/self/fd/1;
+
+  location / {
+    proxy_pass http://<%= hostName %>;
+    include /etc/nginx/proxy_params;
+
+    # HTTP 1.1 support
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+  }
+}
+<% }); %>
