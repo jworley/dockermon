@@ -17,8 +17,8 @@ There are also a binary version of available in the [releases][releases].
 Download the binary, untar it, and add it to you PATH
 
 ```
-$ wget https://github.com/jworley/dockermon/releases/download/v0.1.0/dockermon-linux-amd64-0.1.0.tar.gz
-$ tar -zxvf dockermon-linux-amd64-0.1.0.tar.gz
+$ wget https://github.com/jworley/dockermon/releases/download/v0.1.1/dockermon-linux-amd64-0.1.1.tar.gz
+$ tar -zxvf dockermon-linux-amd64-0.1.1.tar.gz
 $ ./dockermon
 ```
 
