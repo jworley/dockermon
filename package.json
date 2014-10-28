@@ -2,9 +2,14 @@
   "name": "dockermon",
   "version": "0.1.1",
   "description": "Docker monitoring utility",
+  "keywords": [
+    "docker",
+    "utility",
+    "monitoring"
+  ],
   "main": "./lib/index.js",
   "scripts": {
-    "test": "",
+    "test": "mocha ./test/*.spec.js",
     "build": "nexe -f -i ./lib/cli.js -o ./release/dockermon"
   },
   "author": "Jason Worley <jason@jasonincode.com>",
@@ -23,6 +28,7 @@
     "yargs": "^1.3.2"
   },
   "devDependencies": {
+    "mocha": "^2.0.1",
     "nexe": "^0.3.4"
   },
   "repository": {
