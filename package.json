@@ -29,7 +29,9 @@
   },
   "devDependencies": {
     "mocha": "^2.0.1",
-    "nexe": "^0.3.4"
+    "nexe": "^0.3.4",
+    "rewire": "^2.1.1",
+    "sinon": "^1.11.1"
   },
   "repository": {
     "type": "git",
