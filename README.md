@@ -2,6 +2,7 @@
 
 [![Dependencies](http://img.shields.io/david/jworley/dockermon.svg?style=flat-square)][david]
 [![Build Status](http://img.shields.io/travis/jworley/dockermon.svg?style=flat-square)][build]
+[![Code coverage](http://img.shields.io/codecov/c/github/jworley/dockermon.svg?style=flat-square)][codecov]
 [![NPM Version](http://img.shields.io/npm/v/dockermon.svg?style=flat-square)][npm]
 [![Github Version](http://img.shields.io/github/release/jworley/dockermon.svg?style=flat-square)][releases]
 
@@ -67,3 +68,4 @@ I code, therefore I am. To be honest I'd be writing this regardless but if you w
 [gratipay]: https://gratipay.com/indyjworley/
 [coins]: http://gravaco.in/741ca5ac451e12b8b1c50f285b7ccc2a
 [build]: https://travis-ci.org/jworley/dockermon
+[codecov]: https://codecov.io/github/jworley/dockermon
