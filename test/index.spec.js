@@ -180,11 +180,86 @@ describe('dockermon client', function() {
   });
 
   describe('filters', function () {
-    it('should only include containers with exposed ports when --only-exposed is true');
-    it('should only include containers with published ports when --only-published it true');
+    var publishPorts = {
+      "Id": "8dfafdbc3a40",
+      "Image": "base:latest",
+      "Command": "echo 1",
+      "Created": 1367854155,
+      "Status": "Exit 0",
+      "Ports":[{"PrivatePort": 2222, "PublicPort": 3333, "Type": "tcp"}],
+      "SizeRw":12288,
+      "SizeRootFs":0
+    }, exposedPorts = {
+      "Id": "9cd87474be90",
+      "Image": "base:latest",
+      "Command": "echo 222222",
+      "Created": 1367854155,
+      "Status": "Exit 0",
+      "Ports":[{"PrivatePort": 2222, "Type": "tcp"}],
+      "SizeRw":12288,
+      "SizeRootFs":0
+    }, noPorts = {
+      "Id": "3176a2479c92",
+      "Image": "base:latest",
+      "Command": "echo 3333333333333333",
+      "Created": 1367854154,
+      "Status": "Exit 0",
+      "Ports":[],
+      "SizeRw":12288,
+      "SizeRootFs":0
+    }, allContainers = [ publishPorts, exposedPorts, noPorts];
+    it('should only include containers with exposed ports when --only-exposed is true', function(done) {
+      var dockermon = new Dockermon({ onlyExposed: true }),
+          mockDocker = sinon.mock(dockermon.docker),
+          async = { map: function() { } },
+          mockAsync = sinon.mock(async),
+          _processContainers = Dockermon.__get__('_processContainers');
+
+      Dockermon.__set__('async', async);
+      mockDocker.expects('listContainers').yields(null, allContainers);
+      mockAsync.expects('map').withArgs([ publishPorts, exposedPorts ]);
+      dockermon.removeAllListeners();
+
+      _processContainers.call(dockermon);
+
+      mockDocker.verify();
+      mockAsync.verify();
+      done();
+    });
+    it('should only include containers with published ports when --only-published it true', function(done) {
+      var dockermon = new Dockermon({ onlyPublished: true }),
+          mockDocker = sinon.mock(dockermon.docker),
+          async = { map: function() { } },
+          mockAsync = sinon.mock(async),
+          _processContainers = Dockermon.__get__('_processContainers');
+
+      Dockermon.__set__('async', async);
+      mockDocker.expects('listContainers').yields(null, allContainers);
+      mockAsync.expects('map').withArgs([ publishPorts ]);
+      dockermon.removeAllListeners();
+
+      _processContainers.call(dockermon);
+
+      mockDocker.verify();
+      mockAsync.verify();
+      done();
+    });
   });
 
   describe('watch', function () {
-    it('should watch for new events');
+    it('should watch for new events', function() {
+      var dockermon = new Dockermon({ watch: true }),
+          mockDocker = sinon.mock(dockermon.docker),
+          res = { pipe: function() { }, on: function() { } },
+          mockRes = sinon.mock(res);
+
+      mockDocker.expects('getEvents').once().yields(null, res);
+      mockRes.expects('pipe').once().returnsThis();
+      mockRes.expects('on').withArgs('data');
+      dockermon.removeAllListeners();
+      dockermon.run();
+
+      mockDocker.verify();
+    });
   });
 })
