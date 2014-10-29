@@ -90,8 +90,40 @@ describe('dockermon client', function() {
   });
 
   describe('output', function() {
-    it('should write to stdout when not specified');
-    it('should write to the given file when specified');
+    var outputData = '# Containers\n\n* mongo_1\n* web_1';
+    it('should write to stdout when not specified', function(done) {
+      var dockermon = new Dockermon({}),
+          output = { write: function() { } },
+          mockOutput = sinon.mock(output),
+          _loadOutputStream = Dockermon.__get__('_loadOutputStream');
+
+      mockOutput.expects('write').once().withArgs(outputData);
+      Dockermon.__set__('outStreamDefault', output);
+      dockermon.removeAllListeners();
+      _loadOutputStream.call(dockermon);
+      dockermon.outputStream(outputData, function() {
+        mockOutput.verify();
+        done();
+      })
+    });
+    it('should write to the given file when specified', function(done) {
+      var outputPath = '/tmp/test.md',
+        dockermon = new Dockermon({ output: outputPath }),
+        fs = { writeFile: function() { } },
+        mockFS = sinon.mock(fs),
+        fakeMkdirp = sinon.stub().yields();
+        _loadOutputStream = Dockermon.__get__('_loadOutputStream');
+
+      mockFS.expects('writeFile').withArgs(outputPath, outputData).yields();
+      Dockermon.__set__('fs', fs);
+      Dockermon.__set__('mkdirp', fakeMkdirp);
+      dockermon.removeAllListeners();
+      _loadOutputStream.call(dockermon);
+      dockermon.outputStream(outputData, function() {
+        mockFS.verify();
+        done();
+      })
+    });
   });
 
   describe('endpoint', function() {
