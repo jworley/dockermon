@@ -10,7 +10,9 @@
   "main": "./lib/index.js",
   "scripts": {
     "test": "mocha ./test/*.spec.js",
-    "build": "nexe -f -i ./lib/cli.js -o ./release/dockermon"
+    "build": "nexe -f -i ./lib/cli.js -o ./release/dockermon",
+    "coverage": "istanbul cover _mocha -- ./test/*.spec.js",
+    "travis-ci": "npm run coverage && cat ./coverage/lcov.info | codecov && rm -rf ./coverage"
   },
   "author": "Jason Worley <jason@jasonincode.com>",
   "bin": {
@@ -28,6 +30,8 @@
     "yargs": "^1.3.2"
   },
   "devDependencies": {
+    "codecov.io": "0.0.3",
+    "istanbul": "^0.3.2",
     "mocha": "^2.0.1",
     "nexe": "^0.3.4",
     "rewire": "^2.1.1",

@@ -4,3 +4,4 @@ node_js:
   - "0.10"
 notifications:
   webhooks: http://buildborg.jasonincode.com/hook/01gs5njk
+script: npm run travis-ci
